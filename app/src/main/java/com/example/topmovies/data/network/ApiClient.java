@@ -7,9 +7,13 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import com.example.topmovies.utils.Constants;
+
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class ApiClient {
-    final static String BASE_URL = "https://api.themoviedb.org/3/";
     static ApiClient instance = null;
     ApiInterface apiInterface;
 
@@ -31,7 +35,7 @@ public class ApiClient {
                             Request request = chain.request();
                             HttpUrl url = request.url()
                                     .newBuilder()
-                                    .addQueryParameter("api_key", "4d7840571eb6d9224d4413de05dbf03a")
+                                    .addQueryParameter(Constants.API_KEY_NAME,   Constants.API_KEY_VALUE)
                                     .build();
                             request = request.newBuilder().url(url).build();
                             return chain.proceed(request);
@@ -41,7 +45,7 @@ public class ApiClient {
 
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(Constants.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okClient)
                 .build();
@@ -54,7 +58,13 @@ public class ApiClient {
     public Call<MoviesResponseBody> getPopularMovies() {
         return apiInterface.getPopularMovies();
 
-    } public Call<MoviesResponseBody> getSearchResults(String query) {
+    }
+    public Call<MoviesResponseBody> getTopRatedMovies() {
+        return apiInterface.getTopRatedMovies();
+
+    }
+
+    public Call<MoviesResponseBody> getSearchResults(String query) {
         return apiInterface.getSearchResults(query);
 
     }
@@ -67,6 +77,15 @@ public class ApiClient {
     {
 
         return apiInterface.getVideo(movieId);
+    }
+    public Call<MoviesResponseBody> getCatogeries(String catogeryId)
+    {
+        Map<String, String> data = new HashMap<>();
+        data.put("sort_by", "popularity.desc");
+        data.put("with_genres",catogeryId);
+        return apiInterface.getCatogries(data);
+
+
     }
 
 

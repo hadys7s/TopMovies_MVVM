@@ -35,7 +35,6 @@ public class DetailsActivityViewModel extends ViewModel {
 
             @Override
             public void onFailure(Call<CastsResponseBody> call, Throwable t) {
-                Log.v(TAG, t.getCause().toString());
 
 
             }

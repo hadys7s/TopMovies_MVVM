@@ -77,7 +77,7 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsAdapter.ViewHold
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onItemClicked.onListItemCLickedcast(castList.get(getAdapterPosition()));
+                    onItemClicked.onlistitemclickedcast(castList.get(getAdapterPosition()));
 
                 }
             });

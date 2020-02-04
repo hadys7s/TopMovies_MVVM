@@ -5,5 +5,5 @@ import com.example.topmovies.Model.MoviesModel;
 
 public interface OnItemClicked {
     void onListItemCLicked(MoviesModel moviesModel);
-    void onListItemCLickedcast(CastModel moviesModel);
+    void onlistitemclickedcast(CastModel moviesModel);
 }

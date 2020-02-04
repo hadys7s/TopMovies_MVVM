@@ -4,31 +4,43 @@ package com.example.topmovies.Model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.List;
-import com.google.gson.annotations.SerializedName;@SuppressWarnings("unused")
-
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+import com.google.gson.annotations.SerializedName;
+@Entity(tableName = "movies")
 public class MoviesModel implements Parcelable {
+    public  MoviesModel()
+    {
+    }
+    private int favorite=0;
 
-   @SerializedName("name")
-    private  String mName;
-    @SerializedName("first_air_date")
-    private String mFirstairDate;
+    public int getFavorite() {
+        return favorite;
+    }
+    public void setFavorite(int favorite) {
+        this.favorite = favorite;
+    }
+    @Ignore
     @SerializedName("adult")
     private Boolean mAdult;
     @SerializedName("backdrop_path")
     private String mBackdropPath;
-    @SerializedName("genre_ids")
-    private List<Long> mGenreIds;
+    @PrimaryKey
     @SerializedName("id")
     private Long mId;
+    @Ignore
     @SerializedName("media_type")
     private String mMediaType;
+    @Ignore
     @SerializedName("original_language")
     private String mOriginalLanguage;
+    @Ignore
     @SerializedName("original_title")
     private String mOriginalTitle;
     @SerializedName("overview")
     private String mOverview;
+    @Ignore
     @SerializedName("popularity")
     private Double mPopularity;
     @SerializedName("poster_path")
@@ -37,16 +49,16 @@ public class MoviesModel implements Parcelable {
     private String mReleaseDate;
     @SerializedName("title")
     private String mTitle;
+    @Ignore
     @SerializedName("video")
     private Boolean mVideo;
     @SerializedName("vote_average")
-    private Float mVoteAverage;
+    private Double mVoteAverage;
+    @Ignore
     @SerializedName("vote_count")
     private long mVoteCount;
 
     protected MoviesModel(Parcel in) {
-        mName = in.readString();
-        mFirstairDate = in.readString();
         byte tmpMAdult = in.readByte();
         mAdult = tmpMAdult == 0 ? null : tmpMAdult == 1;
         mBackdropPath = in.readString();
@@ -72,7 +84,7 @@ public class MoviesModel implements Parcelable {
         if (in.readByte() == 0) {
             mVoteAverage = null;
         } else {
-            mVoteAverage = in.readFloat();
+            mVoteAverage = in.readDouble();
         }
         mVoteCount = in.readLong();
     }
@@ -97,6 +109,7 @@ public class MoviesModel implements Parcelable {
         mAdult = adult;
     }
 
+
     public String getBackdropPath() {
         return mBackdropPath;
     }
@@ -105,13 +118,6 @@ public class MoviesModel implements Parcelable {
         mBackdropPath = backdropPath;
     }
 
-    public List<Long> getGenreIds() {
-        return mGenreIds;
-    }
-
-    public void setGenreIds(List<Long> genreIds) {
-        mGenreIds = genreIds;
-    }
 
     public Long getId() {
         return mId;
@@ -135,14 +141,6 @@ public class MoviesModel implements Parcelable {
 
     public void setOriginalLanguage(String originalLanguage) {
         mOriginalLanguage = originalLanguage;
-    }
-
-    public String getFirstairDate() {
-        return mFirstairDate;
-    }
-
-    public String getName() {
-        return mName;
     }
 
     public String getOriginalTitle() {
@@ -201,11 +199,11 @@ public class MoviesModel implements Parcelable {
         mVideo = video;
     }
 
-    public Float getVoteAverage() {
+    public Double getVoteAverage() {
         return mVoteAverage;
     }
 
-    public void setVoteAverage(float voteAverage) {
+    public void setVoteAverage(Double voteAverage) {
         mVoteAverage = voteAverage;
     }
 
@@ -225,8 +223,6 @@ public class MoviesModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mName);
-        dest.writeString(mFirstairDate);
         dest.writeByte((byte) (mAdult == null ? 0 : mAdult ? 1 : 2));
         dest.writeString(mBackdropPath);
         if (mId == null) {
@@ -253,7 +249,7 @@ public class MoviesModel implements Parcelable {
             dest.writeByte((byte) 0);
         } else {
             dest.writeByte((byte) 1);
-            dest.writeFloat(mVoteAverage);
+            dest.writeDouble(mVoteAverage);
         }
         dest.writeLong(mVoteCount);
     }

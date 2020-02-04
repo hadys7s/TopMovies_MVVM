@@ -1,6 +1,12 @@
 package com.example.topmovies.UI.details;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -8,6 +14,7 @@ import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,7 +36,9 @@ import com.example.topmovies.Model.CastModel;
 import com.example.topmovies.Model.MoviesModel;
 import com.example.topmovies.Model.TrailerModel;
 import com.example.topmovies.R;
+import com.example.topmovies.data.db.Dao;
 import com.example.topmovies.databinding.MovieDetailsBinding;
+import com.example.topmovies.utils.Constants;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragmentX;
@@ -55,11 +64,11 @@ public class DetailsActivity extends AppCompatActivity {
 
         movieDetailsBinding.rvCast.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
         movieDetailsBinding.rvCast.setAdapter(detailsAdapter);
-        MoviesModel moviesObject = getIntent().getParcelableExtra("movieItem");
+        MoviesModel moviesObject = getIntent().getParcelableExtra(Constants.MOVIE_INTENT_KEY);
         if (!moviesObject.getTitle().isEmpty())
             movieDetailsBinding.tvTitle.setText(moviesObject.getTitle());
         else {
-            movieDetailsBinding.tvTitle.setText(moviesObject.getName());
+           // movieDetailsBinding.tvTitle.setText(moviesObject.getName());
         }
 
 
@@ -72,7 +81,7 @@ public class DetailsActivity extends AppCompatActivity {
             movieDetailsBinding.tvReleaseDate.setText("Unkown");
 
         }
-        movieDetailsBinding.tvAvgRate.setText(stringToFloat(moviesObject.getVoteAverage()) + "/10");
+        movieDetailsBinding.tvAvgRate.setText(moviesObject.getVoteAverage() + "/10");
         Glide.with(this)
                 .load("https://image.tmdb.org/t/p/original/" + moviesObject.getPosterPath())
                 .transform(new MultiTransformation(new BlurTransformation()))
@@ -123,7 +132,6 @@ public class DetailsActivity extends AppCompatActivity {
                                 public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
 
                                     youTubePlayer.cueVideo(trailerModel.getKey());
-
                                 }
 
                                 @Override
@@ -153,9 +161,48 @@ public class DetailsActivity extends AppCompatActivity {
 
             }
         });
+        //observe internet connection
+        ConnectivityManager.NetworkCallback networkCallback = new ConnectivityManager.NetworkCallback() {
+            @Override
+            public void onAvailable(Network network) {
+                // network
+                detailsActivityViewModel.getcastlist(moviesObject.getId());
+                detailsActivityViewModel.getTrailerUrl(moviesObject.getId());
+                Glide.with(getApplicationContext())
+                        .load("https://image.tmdb.org/t/p/original/" + moviesObject.getPosterPath())
+                        .transform(new MultiTransformation(new BlurTransformation()))
+                        .into(new SimpleTarget<Drawable>() {
+                            @Override
+                            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                                movieDetailsBinding.clDetailsBackground.setBackground(resource);
+                            }
+                        });
+
+
+
+
+            }
+
+            @Override
+            public void onLost(Network network) {
+                // network unavailable
+            }
+        };
+
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            connectivityManager.registerDefaultNetworkCallback(networkCallback);
+        } else {
+            NetworkRequest request = new NetworkRequest.Builder()
+                    .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build();
+            connectivityManager.registerNetworkCallback(request, networkCallback);
+        }
 
 
     }
+
 
 
 
@@ -171,28 +218,7 @@ public class DetailsActivity extends AppCompatActivity {
 
     }
 
-    private String stringToFloat(float text) {
 
-        return Float.toString(text);
-
-    }
-
-    public void playVideo(final String videoId, YouTubePlayerSupportFragmentX youTubePlayerView) {
-        youTubePlayerView.initialize("AIzaSyAsZTzRJC5O7C_aKjVpFVEWnwH3FC8_fdM",
-                new YouTubePlayer.OnInitializedListener() {
-                    @Override
-                    public void onInitializationSuccess(YouTubePlayer.Provider provider,
-                                                        YouTubePlayer youTubePlayer, boolean b) {
-                        youTubePlayer.cueVideo(videoId);
-                    }
-
-                    @Override
-                    public void onInitializationFailure(YouTubePlayer.Provider provider,
-                                                        YouTubeInitializationResult youTubeInitializationResult) {
-
-                    }
-                });
-    }
 
 
 }

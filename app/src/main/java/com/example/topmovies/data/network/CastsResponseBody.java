@@ -20,6 +20,17 @@ public class CastsResponseBody {
         mCastModel = castModel;
     }
 
+    public Long getmId() {
+        return mId;
+    }
+
+    public void setmId(Long mId) {
+        this.mId = mId;
+    }
+
+    @SerializedName("id")
+    private Long mId;
+
 
 
 }
