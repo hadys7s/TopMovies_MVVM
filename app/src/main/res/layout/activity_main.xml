@@ -2,6 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawerLayout"
         android:layout_width="match_parent"
@@ -9,17 +10,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
-
+        app:layout_constraintTop_toTopOf="parent">
 
 
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/design_navigation_view"
-            android:layout_width="300dp"
-            app:headerLayout="@layout/header"
+            android:layout_width="200dp"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:background="#2A2A2A"
+            app:headerLayout="@layout/header"
+            android:background="#808080"
             app:itemIconTint="#fff"
             app:itemTextColor="#fff"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -28,82 +28,102 @@
             app:menu="@menu/menudrawer" />
 
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#2A2A2A"
+            android:paddingTop="3dp"
+            android:paddingEnd="3dp"
+            tools:context=".UI.main.MainActivity">
 
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#2A2A2A"
-        android:paddingTop="3dp"
-        android:paddingEnd="3dp"
-        tools:context=".UI.main.MainActivity">
-    <RelativeLayout
-            android:id="@+id/rv_top"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="1dp"
-            android:background="@color/colorPrimary"
-            app:layout_constraintBottom_toTopOf="@+id/rv_popularmovies"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:id="@+id/btn_open_drawer"
-            android:layout_centerVertical="true"
-            android:background="@color/colorPrimary"
-            android:src="@drawable/ic_menu_black_24dp" />
-
-
-        <SearchView
-                android:id="@+id/searchView"
-                android:layout_width="match_parent"
+            <RelativeLayout
+                android:id="@+id/rv_top"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layoutDirection="rtl"
-                android:padding="5dp"
-                android:searchIcon="@drawable/ic_search_black_24dp"
-                android:queryHint="Which movie do you like ?"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginBottom="1dp"
+                app:layout_constraintBottom_toTopOf="@+id/rv_popularmovies"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-        </SearchView>
+                <ImageButton
+                    android:id="@+id/btn_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:visibility="gone"
+                    android:src="@drawable/ic_keyboard_backspace_black_24dp"
+                    />
 
-        <TextView
-                android:id="@+id/tv_head_name"
+
+                <SearchView
+                    android:id="@+id/searchView"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layoutDirection="rtl"
+                    android:gravity="center_vertical"
+                    android:padding="5dp"
+                    android:lineSpacingMultiplier="0"
+                    android:layout_centerVertical="true"
+                    android:theme="@style/WallSearchView"
+                    android:queryHint="Search"
+                    android:searchIcon="@drawable/ic_search_black_24dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_toEndOf="@id/btn_back"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                </SearchView>
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/btn_open_drawer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="5dp"
+                    android:src="@drawable/ic_menu_black_24dp" />
+
+                <TextView
+                    android:id="@+id/tv_head_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="50dp"
+                    android:text="Home"
+                    android:textColor="@color/white"
+                    android:textSize="22sp"
+
+                    />
+            </RelativeLayout>
+            <TextView
+                android:id="@+id/empty_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="50dp"
-                android:text="Home"
                 android:textColor="@color/white"
+                android:visibility="invisible"
+                app:layout_constraintTop_toBottomOf="@id/rv_top"
+                app:layout_constraintEnd_toEndOf="@id/rv_top"
+                app:layout_constraintStart_toStartOf="@id/rv_top"
                 android:textSize="22sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:text="No Favourites" />
 
-                />
-        </RelativeLayout>
 
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_popularmovies"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="1dp"
-            android:layout_marginTop="1dp"
-            android:layout_marginEnd="1dp"
-            android:layout_marginBottom="1dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rv_top" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_popularmovies"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="1dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginEnd="1dp"
+                android:layout_marginBottom="1dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rv_top" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.drawerlayout.widget.DrawerLayout>
-
-
-
 
 
 

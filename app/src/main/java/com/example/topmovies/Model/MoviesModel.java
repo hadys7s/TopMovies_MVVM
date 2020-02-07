@@ -7,20 +7,24 @@ import android.os.Parcelable;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.SerializedName;
+// we merge model(api) and table(database)
 @Entity(tableName = "movies")
 public class MoviesModel implements Parcelable {
-    public  MoviesModel()
-    {
+    public MoviesModel() {
     }
-    private int favorite=0;
+
+    private int favorite = 0;
 
     public int getFavorite() {
         return favorite;
     }
+
     public void setFavorite(int favorite) {
         this.favorite = favorite;
     }
+
     @Ignore
     @SerializedName("adult")
     private Boolean mAdult;

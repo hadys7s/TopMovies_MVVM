@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-
-
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -13,8 +10,7 @@
         android:foregroundTint="@color/colorPrimary"
         android:orientation="vertical"
         app:layout_constraintEnd_toStartOf="@+id/tv_title"
-        app:layout_constraintStart_toStartOf="@+id/tv_title"
-        >
+        app:layout_constraintStart_toStartOf="@+id/tv_title">
 
         <View
             android:id="@+id/view"
@@ -74,20 +70,16 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginRight="15dp"
-                    >
+                    android:layout_marginRight="15dp">
 
-                    <RatingBar
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:isIndicator="true"
-                        android:numStars="1"
-                        android:rating="1"
-                        android:scaleX="0.8"
-                        android:scaleY="0.8"
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
-                        android:theme="@style/RatingBar"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="13dp"
                         android:layout_toEndOf="@id/tv_avg_rate"
+                        android:src="@drawable/star"
                         app:layout_constraintBottom_toBottomOf="@+id/tv_avg_rate"
                         app:layout_constraintStart_toEndOf="@+id/tv_avg_rate"
                         app:layout_constraintTop_toTopOf="@+id/tv_avg_rate" />
@@ -96,8 +88,8 @@
                         android:id="@+id/tv_avg_rate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
                         android:layout_centerHorizontal="true"
+                        android:layout_marginTop="10dp"
                         android:text="TextView"
                         android:textColor="#fff"
                         android:textSize="22sp"
@@ -112,12 +104,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:orientation="horizontal"/>
-
-
-
-
-
+                    android:orientation="horizontal" />
 
                 <TextView
                     android:id="@+id/tv_description"
@@ -138,7 +125,6 @@
                     android:textColor="#fff" />
 
 
-
                 <TextView
                     android:id="@+id/tv_trailerhead"
                     android:layout_width="wrap_content"
@@ -147,58 +133,87 @@
                     android:text="Trailer"
                     android:textColor="@color/pink"
                     android:textSize="22sp" />
+
                 <TextView
                     android:id="@+id/trailer_name"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
                     android:layout_marginTop="20dp"
+                    android:layout_marginRight="20dp"
                     android:layout_marginBottom="10dp"
                     android:gravity="bottom|left"
                     android:textColor="@android:color/white"
                     android:textStyle="bold" />
+
                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:id="@+id/ll_hide_video"
-                    >
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
 
 
-                <fragment
-                    android:name="com.google.android.youtube.player.YouTubePlayerSupportFragmentX"
-                    android:id="@+id/youtube_fragment"
-                    android:layout_width="match_parent"
-                    android:layout_marginBottom="20dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginLeft="20dp"
-                    android:gravity="bottom|left"
-                    android:layout_height="wrap_content"/>
+                    <fragment
+                        android:id="@+id/youtube_fragment"
+                        android:name="com.google.android.youtube.player.YouTubePlayerSupportFragmentX"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="20dp"
+                        android:gravity="bottom|left" />
 
                 </LinearLayout>
 
+                <TextView
+                    android:id="@+id/tv_how_would_you_rate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="#fff"
+                    android:textSize="30sp" />
 
-                <!-- <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                     android:layout_width="match_parent"
-                     android:layout_height="200dp"
-                     android:id="@+id/fl_trailerclick"
-                     android:layout_marginBottom="15dp"
-                     android:layout_marginRight="15dp"
-                     android:layout_marginLeft="15dp"
+                <TextView
+                    android:id="@+id/tv_rate_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="170dp"
+                    android:layout_marginEnd="70dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="bottom|left"
+                    android:textColor="#fff"
+                    android:textSize="30sp"
+                    android:visibility="invisible"
 
-                     >
+                    />
 
+                <RatingBar
+                    android:id="@+id/rate_bar"
+                    style="?android:attr/ratingBarStyleIndicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:isIndicator="false"
+                    android:stepSize="1 "
+                    android:rating="0"
+                    android:numStars="10"
+                    android:layout_marginStart="1dp"
+                    android:progressTint="@color/yellow"
+                    android:progressBackgroundTint="@color/white"
+                    android:secondaryProgressTint="@color/colorPrimary"
+                     />
 
-                     <ImageView
-                         android:id="@+id/trailer_image"
-                         android:layout_width="match_parent"
-                         android:layout_height="match_parent"
-                         android:scaleType="centerCrop" />
-
-
-                 </FrameLayout>
- -->
-
+                <Button
+                    android:id="@+id/btn_rate"
+                    android:layout_width="180dp"
+                    android:layout_height="wrap_content"
+                    android:text="Rate Now !"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/rounded_btn_rate"
+                    android:layout_marginStart="90dp"
+                    android:textSize="20sp"
+                    android:layout_marginBottom="10dp"
+                    android:enabled="false"
+                    android:textColor="#fff" />
 
             </LinearLayout>
         </ScrollView>

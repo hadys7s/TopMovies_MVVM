@@ -8,6 +8,22 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <ProgressBar
+            android:id="@+id/movies_progress_bar"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="8dp"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/white"
+            android:indeterminateTintMode="src_atop"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_photo"
+            app:layout_constraintEnd_toEndOf="@+id/iv_photo"
+            app:layout_constraintStart_toStartOf="@id/iv_photo"
+            app:layout_constraintTop_toTopOf="@+id/iv_photo">
+
+        </ProgressBar>
+
         <ImageView
             android:id="@+id/iv_photo"
             android:layout_width="150dp"
@@ -21,6 +37,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <RelativeLayout
+            android:id="@+id/relativeLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="40dp"
@@ -81,18 +98,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_photo" />
 
-        <ImageButton
-            android:id="@+id/Ibtn_fav"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            app:layout_constraintBottom_toBottomOf="@id/iv_photo"
-            app:layout_constraintStart_toStartOf="@id/iv_photo"
-            tools:layout_editor_absoluteX="70dp" />
-
-        <!-- <View
-             android:layout_width="match_parent"
-             android:layout_height="1dp"
-             android:layout_marginTop="10dp"
-             android:background="@android:color/darker_gray" />-->
+            <com.like.LikeButton
+                app:icon_type="heart"
+                android:id="@+id/btn_fav"
+                android:layout_width="wrap_content"
+                app:anim_scale_factor="1.5"
+                android:animateLayoutChanges="true"
+                app:icon_size="30dp"
+                app:dots_primary_color="@color/red"
+                app:dots_secondary_color="@color/red"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@id/iv_photo"
+                app:layout_constraintStart_toStartOf="@id/iv_photo" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

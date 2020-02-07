@@ -20,6 +20,7 @@ android {
     dataBinding {
         enabled = true
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -57,4 +58,7 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
+
+    //love-animation
+    compile 'com.github.jd-alexander:LikeButton:0.2.3'
 }

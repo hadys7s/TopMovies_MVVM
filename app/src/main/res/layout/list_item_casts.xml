@@ -8,6 +8,19 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="3dp">
+        <ProgressBar
+            android:id="@+id/cast_progress_bar"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="8dp"
+            android:indeterminate="true"
+            android:indeterminateTintMode="src_atop"
+            android:indeterminateTint="@color/white"
+            android:visibility="visible"
+            app:layout_constraintStart_toStartOf="@+id/iv_actress"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_actress"
+            app:layout_constraintEnd_toEndOf="@+id/iv_actress"
+            app:layout_constraintTop_toTopOf="@+id/iv_actress"/>
 
         <ImageView
             android:id="@+id/iv_actress"

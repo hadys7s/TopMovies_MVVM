@@ -1,12 +1,11 @@
 
 package com.example.topmovies.data.network;
 
-import java.util.List;
-
 import com.example.topmovies.Model.CastModel;
 import com.google.gson.annotations.SerializedName;
 
-@SuppressWarnings("unused")
+import java.util.List;
+
 public class CastsResponseBody {
 
     @SerializedName("cast")
@@ -30,7 +29,6 @@ public class CastsResponseBody {
 
     @SerializedName("id")
     private Long mId;
-
 
 
 }

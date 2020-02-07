@@ -14,6 +14,7 @@ import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.view.View;
+import android.widget.RatingBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -34,9 +35,9 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.topmovies.Model.CastModel;
 import com.example.topmovies.Model.MoviesModel;
+import com.example.topmovies.Model.RateResponse;
 import com.example.topmovies.Model.TrailerModel;
 import com.example.topmovies.R;
-import com.example.topmovies.data.db.Dao;
 import com.example.topmovies.databinding.MovieDetailsBinding;
 import com.example.topmovies.utils.Constants;
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -56,6 +57,27 @@ public class DetailsActivity extends AppCompatActivity {
         YouTubePlayerSupportFragmentX frag =
                 (YouTubePlayerSupportFragmentX) getSupportFragmentManager().findFragmentById(R.id.youtube_fragment);
 
+        movieDetailsBinding.rateBar.setNumStars(10);
+
+        movieDetailsBinding.rateBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+
+
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating,
+                                        boolean fromUser) {
+
+                //rate.setValue(movieDetailsBinding.rateBar.getRating());
+                movieDetailsBinding.tvRateNumber.setVisibility(View.VISIBLE);
+                movieDetailsBinding.tvRateNumber.setText(rating + "");
+                movieDetailsBinding.btnRate.setEnabled(true);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    movieDetailsBinding.btnRate.getDefaultFocusHighlightEnabled();
+                }
+
+
+            }
+        });
+
 
         DetailsAdapter detailsAdapter = new DetailsAdapter(this);
         RequestOptions castCircleCrop = new RequestOptions();
@@ -68,9 +90,10 @@ public class DetailsActivity extends AppCompatActivity {
         if (!moviesObject.getTitle().isEmpty())
             movieDetailsBinding.tvTitle.setText(moviesObject.getTitle());
         else {
-           // movieDetailsBinding.tvTitle.setText(moviesObject.getName());
+            // movieDetailsBinding.tvTitle.setText(moviesObject.getName());
         }
 
+        movieDetailsBinding.tvHowWouldYouRate.setText("How would you rate " + moviesObject.getTitle()+" ?");
 
         movieDetailsBinding.tvDescription.setText(textHead("Description : " + moviesObject.getOverview(), 13));
 
@@ -153,6 +176,28 @@ public class DetailsActivity extends AppCompatActivity {
 
             }
         });
+        movieDetailsBinding.btnRate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                detailsActivityViewModel.getSessionId();
+            }
+        });
+
+        detailsActivityViewModel.sessionId.observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                detailsActivityViewModel.postrate(moviesObject.getId(), detailsActivityViewModel.sessionId.getValue(),
+                        Float.toString(movieDetailsBinding.rateBar.getRating()));
+            }
+        });
+
+
+        detailsActivityViewModel.rate.observe(this, new Observer<RateResponse>() {
+            @Override
+            public void onChanged(RateResponse rateResponse) {
+                Toast.makeText(getApplicationContext(), movieDetailsBinding.rateBar.getRating() + " Stars! " +"Rated", Toast.LENGTH_LONG).show();
+            }
+        });
         detailsActivityViewModel.CastList.observe(this, new Observer<List<CastModel>>() {
             @Override
             public void onChanged(List<CastModel> castModels) {
@@ -179,8 +224,6 @@ public class DetailsActivity extends AppCompatActivity {
                         });
 
 
-
-
             }
 
             @Override
@@ -204,8 +247,6 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
 
-
-
     private Spannable textHead(String text, int end) {
         Spannable spannable = new SpannableString(text);
         spannable.setSpan(
@@ -217,8 +258,6 @@ public class DetailsActivity extends AppCompatActivity {
 
 
     }
-
-
 
 
 }

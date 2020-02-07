@@ -1,25 +1,34 @@
 package com.example.topmovies.UI.main;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.RotateAnimation;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.example.topmovies.Model.MoviesModel;
 import com.example.topmovies.R;
-import com.example.topmovies.UI.Adapters.OnItemClicked;
-import com.example.topmovies.data.db.MoviesDb;
+import com.example.topmovies.databinding.ActivityMainBinding;
 import com.example.topmovies.databinding.ListItemMoviesBinding;
 import com.example.topmovies.utils.Constants;
+import com.like.LikeButton;
+import com.like.OnLikeListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,20 +38,24 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
     private Context context;
     private OnItemClicked onItemClicked;
     MainActivityViewModel viewModel;
+    ActivityMainBinding activityMainBinding;
 
-    public MainAdapter(Context context,MainActivityViewModel mainActivityViewModel,OnItemClicked onItemClicked) {
-
+    // constructor to get adapter needs from main activity
+    public MainAdapter(Context context, MainActivityViewModel mainActivityViewModel,
+                       ActivityMainBinding activityMainBinding, OnItemClicked onItemClicked) {
         this.context = context;
         this.onItemClicked = onItemClicked;
-        viewModel=mainActivityViewModel;
-
+        viewModel = mainActivityViewModel;
+        this.activityMainBinding = activityMainBinding;
     }
 
+    // movies list for recycler view
     List<MoviesModel> moviesList = new ArrayList<>();
 
 
     @NonNull
     @Override
+    //inflate the view form data binding
     public MainAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         ListItemMoviesBinding binding = DataBindingUtil.inflate(layoutInflater, R.layout.list_item_movies, parent, false);
@@ -53,25 +66,21 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull MainAdapter.ViewHolder holder, int position) {
-
-
-        holder.binding.IbtnFav.setBackgroundColor(Color.TRANSPARENT);
-
         MoviesModel moviesModel = moviesList.get(position);
-        holder.binding.tvAvgRate.setText(moviesModel.getVoteAverage()+"");
+        holder.binding.tvAvgRate.setText(moviesModel.getVoteAverage() + "");
 
-        if (viewModel.getFavValue(moviesModel.getId())==1)
-        {
-            holder.binding.IbtnFav.setImageResource(R.drawable.fav_inline);
+        // check if user liked the movie or not to set heart status
+        if (viewModel.getFavValue(moviesModel.getId()) == 1) {
+            holder.binding.btnFav.setLiked(true);
 
-
-        }else {
-            holder.binding.IbtnFav.setImageResource(R.drawable.fav_outline);
+        } else {
+            holder.binding.btnFav.setLiked(false);
 
         }
 
 
-            try {
+        //
+        try {
 
 
             if (!moviesModel.getTitle().isEmpty()) {
@@ -80,27 +89,49 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
             }
         } catch (Exception e) {
 
-         //   holder.binding.tvTitle.setText(moviesModel.getName());
+            //   holder.binding.tvTitle.setText(moviesModel.getName());
 
         }
+        if (TextUtils.isEmpty(moviesModel.getBackdropPath())) {
+            glideloader(moviesModel.getPosterPath(), holder);
 
-        RequestOptions requestOptions = new RequestOptions();
-        requestOptions = requestOptions.transforms(new CenterCrop(), new RoundedCorners(16));
+        } else {
+
+            glideloader(moviesModel.getBackdropPath(), holder);
+        }
         try {
             holder.binding.tvReleaseDate.setText(releaseYear(moviesModel.getReleaseDate()));
         } catch (Exception e) {
             holder.binding.tvReleaseDate.setText("Unknown");
 
         }
-        Glide.with(context)
-                .applyDefaultRequestOptions(requestOptions)
-                .load(Constants.IMAGE_BASE_URL + moviesModel.getBackdropPath())
-                .centerCrop()
-                .into(holder.binding.ivPhoto);
     }
 
     private String releaseYear(String date) {
         return date.substring(0, 4);
+    }
+
+    void glideloader(String original, ViewHolder holder) {
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions = requestOptions.transforms(new CenterCrop(), new RoundedCorners(16));
+        Glide.with(context)
+                .applyDefaultRequestOptions(requestOptions)
+                .load(Constants.IMAGE_BASE_URL + original)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        holder.binding.moviesProgressBar.setVisibility(View.GONE);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        holder.binding.moviesProgressBar.setVisibility(View.GONE);
+                        return false;
+                    }
+                })
+                .into(holder.binding.ivPhoto);
+
     }
 
     @Override
@@ -114,26 +145,41 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         public ViewHolder(@NonNull ListItemMoviesBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
-            binding.IbtnFav.setOnClickListener(new View.OnClickListener() {
+            RotateAnimation rotateAnimation = (RotateAnimation) AnimationUtils.loadAnimation(context, R.anim.rotate);
+            binding.btnFav.setOnLikeListener(new OnLikeListener() {
                 @Override
-                public void onClick(View v) {
-                    int check=viewModel.getFavValue(moviesList.get(getAdapterPosition()).getId());
-                    if (check==0) {
-                        viewModel.addfavmovie(moviesList.get(getAdapterPosition()));
-                        binding.IbtnFav.setImageResource(R.drawable.fav_inline);
-                        viewModel.updateFavValue(moviesList.get(getAdapterPosition()).getId(),1);
-                    }else
-                    {
-                        //viewModel.removefavmovie(moviesList.get(getAdapterPosition()));
-                        binding.IbtnFav.setImageResource(R.drawable.fav_outline);
-                        viewModel.updateFavValue(moviesList.get(getAdapterPosition()).getId(),0);
-                        addMoviesList(viewModel.getfavMoviesList());
+                public void liked(LikeButton likeButton) {
+                    binding.star.startAnimation(rotateAnimation);
+                    binding.btnFav.setLiked(true);
+                    // binding.btnFav.startAnimation(animation);
+                    viewModel.addfavouriteMovie(moviesList.get(getAdapterPosition()));
+                    //  binding.btnFav.setImageResource(R.drawable.fav_inline);
+                    viewModel.updateFavouriteValue(moviesList.get(getAdapterPosition()).getId(), 1);
 
 
-                    }
                 }
 
+                @Override
+                public void unLiked(LikeButton likeButton) {
+                    binding.btnFav.setLiked(false);
+                    binding.star.startAnimation(rotateAnimation);
+                    viewModel.updateFavouriteValue(moviesList.get(getAdapterPosition()).getId(), 0);
+                    if (activityMainBinding.tvHeadName.getText().toString() == "Favourites") {
+                        if (viewModel.getFavouritesMoviesList().isEmpty()) {
+                            activityMainBinding.rvPopularmovies.setVisibility(View.INVISIBLE);
+                            activityMainBinding.emptyView.setVisibility(View.VISIBLE);
+                        } else {
+                            binding.btnFav.setLiked(false);
+                            addMoviesList(viewModel.getFavouritesMoviesList());
 
+
+                        }
+                    } else {
+
+                    }
+
+
+                }
             });
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -147,9 +193,10 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
     }
 
     public void addMoviesList(List<MoviesModel> moviesList) {
-        this.moviesList=moviesList;
+        this.moviesList = moviesList;
         notifyDataSetChanged();
     }
+
     public void loadmore(List<MoviesModel> moviesList) {
         this.moviesList.addAll(moviesList);
         notifyDataSetChanged();
@@ -163,3 +210,9 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
 
 }
+
+
+//unlike
+
+
+//like

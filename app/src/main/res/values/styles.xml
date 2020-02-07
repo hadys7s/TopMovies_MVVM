@@ -12,13 +12,19 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-    <style name="RatingBar" parent="Theme.AppCompat">
-        <item name="colorControlNormal">@color/yellow</item>
-        <item name="colorControlActivated">@color/yellow</item>
+    <style name="WallSearchView" parent="Widget.AppCompat.SearchView">
+        ...
+        <item name="iconifiedByDefault">false</item>
+        <item name="colorControlActivated">#FFffffff</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="RatingBar" parent="Theme.AppCompat">
+        <item name="colorControlNormal">#fff</item>
+        <item name="colorControlActivated">@color/yellow</item>
+    </style>
 
 </resources>

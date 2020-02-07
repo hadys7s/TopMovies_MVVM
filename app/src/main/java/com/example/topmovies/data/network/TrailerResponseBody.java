@@ -1,10 +1,10 @@
 
 package com.example.topmovies.data.network;
 
-import java.util.List;
-
 import com.example.topmovies.Model.TrailerModel;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 public class TrailerResponseBody {
 

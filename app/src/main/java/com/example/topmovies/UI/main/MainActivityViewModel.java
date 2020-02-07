@@ -6,7 +6,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 import androidx.room.Room;
 
 import com.example.topmovies.Model.MoviesModel;
@@ -21,32 +20,35 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivityViewModel extends AndroidViewModel {
+    //list for main movies home
     MutableLiveData<List<MoviesModel>> moviesList = new MutableLiveData<>();
+    // list for search results
     MutableLiveData<List<MoviesModel>> moviesSearchedList = new MutableLiveData<>();
+    //list for cached movies
     MutableLiveData<List<MoviesModel>> moviesCashedList = new MutableLiveData<>();
+    // list for load more movies when scrolling scrolling
     MutableLiveData<List<MoviesModel>> loadmore = new MutableLiveData<>();
+    // live data to observe any error
     MutableLiveData<Throwable> error = new MutableLiveData<>();
+
 
     public MainActivityViewModel(@NonNull Application application) {
         super(application);
     }
 
+    // build the data base
     MoviesDb newsDB = Room.databaseBuilder(getApplication(), MoviesDb.class, MoviesDb.DATABASE_NAME).allowMainThreadQueries().build();
-
 
     public int getFavValue(Long id) {
         return newsDB.moviesDao().getFavValue(id);
-
-
     }
 
-    public  List<MoviesModel> getfavMoviesList()
-    {
-        return newsDB.moviesDao().getfavMoviesList();
+    public List<MoviesModel> getFavouritesMoviesList() {
+        return newsDB.moviesDao().getFavouriteMoviesList();
     }
 
 
-    public void updateFavValue(long id, int favValue) {
+    public void updateFavouriteValue(long id, int favValue) {
         newsDB.moviesDao().updateFavourite(favValue, id);
 
 
@@ -66,17 +68,12 @@ public class MainActivityViewModel extends AndroidViewModel {
         newsDB.moviesDao().addMoviesList(cashedlist);
     }
 
-    void addfavmovie(MoviesModel moviesFav) {
+    void addfavouriteMovie(MoviesModel moviesFav) {
 
-        newsDB.moviesDao().addfavmovie(moviesFav);
+        newsDB.moviesDao().addFavouriteMovie(moviesFav);
     }
 
-    void removefavmovie(MoviesModel moviesModel) {
-        newsDB.moviesDao().removefavmovie(moviesModel);
-
-    }
-
-
+    // the call for the main movies in home
     public void getMoviesList() {
         Call<MoviesResponseBody> popularMovies = ApiClient.getInstance().getPopularMovies();
         popularMovies.enqueue(new Callback<MoviesResponseBody>() {
@@ -91,14 +88,14 @@ public class MainActivityViewModel extends AndroidViewModel {
             public void onFailure(Call<MoviesResponseBody> call, Throwable t) {
                 error.setValue(t);
 
-
             }
         });
 
     }
 
-    public void getCatogriesList(String catogeryId) {
-        Call<MoviesResponseBody> popularMovies = ApiClient.getInstance().getCatogeries(catogeryId);
+    //call for getting catogery like action,romance etc....
+    public void getCategoriesList(String catogeryId) {
+        Call<MoviesResponseBody> popularMovies = ApiClient.getInstance().getCategories(catogeryId);
         popularMovies.enqueue(new Callback<MoviesResponseBody>() {
             @Override
             public void onResponse(Call<MoviesResponseBody> call, Response<MoviesResponseBody> response) {
@@ -117,7 +114,8 @@ public class MainActivityViewModel extends AndroidViewModel {
 
     }
 
-    public void gettopMoviesList() {
+    // Call for Top Movies (Home)
+    public void getTopMoviesList() {
         Call<MoviesResponseBody> popularMovies = ApiClient.getInstance().getTopRatedMovies();
         popularMovies.enqueue(new Callback<MoviesResponseBody>() {
             @Override
@@ -137,7 +135,7 @@ public class MainActivityViewModel extends AndroidViewModel {
 
     }
 
-
+    // Call for get search results
     public void getSearchResults(String query) {
         Call<MoviesResponseBody> popularMovies = ApiClient.getInstance().getSearchResults(query);
         popularMovies.enqueue(new Callback<MoviesResponseBody>() {
