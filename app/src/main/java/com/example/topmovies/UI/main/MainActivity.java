@@ -17,10 +17,10 @@ import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -66,11 +66,11 @@ public class MainActivity extends AppCompatActivity {
         activityMainBinding.btnOpenDrawer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activityMainBinding.drawerLayout.openDrawer(Gravity.LEFT);
+                activityMainBinding.dlMain.openDrawer(Gravity.LEFT);
             }
         });
         //set the head for navigation drawer and
-        View hView =  activityMainBinding.designNavigationView.getHeaderView(0);
+        View hView =  activityMainBinding.nvMain.getHeaderView(0);
         ImageView nav_header = hView.findViewById(R.id.iv_header);
         Glide.with(this)
                 .load(R.drawable.headerpopcorn)
@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
         viewModel.loadmore.observe(this, new Observer<List<MoviesModel>>() {
             @Override
             public void onChanged(List<MoviesModel> moviesModels) {
-                mainAdapter.loadmore(moviesModels);
+                mainAdapter.loadMore(moviesModels);
                 viewModel.cashMoviesList(moviesModels);
             }
         });
@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //  set navigation categories   right data
-        activityMainBinding.designNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        activityMainBinding.nvMain.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
@@ -243,8 +243,8 @@ public class MainActivity extends AppCompatActivity {
                         activityMainBinding.emptyView.setVisibility(View.INVISIBLE);
                         viewModel.getMoviesList();
                         viewModel.getTopMoviesList();
-                        activityMainBinding.drawerLayout.closeDrawer(Gravity.LEFT);
-                        activityMainBinding.tvHeadName.setText("Home");
+                        activityMainBinding.dlMain.closeDrawer(GravityCompat.START);
+                        activityMainBinding.tvHeadName.setText( getResources().getString(R.string.home));
                         break;
 
                     case R.id.favourites:
@@ -258,30 +258,30 @@ public class MainActivity extends AppCompatActivity {
                             activityMainBinding.rvPopularmovies.setVisibility(View.INVISIBLE);
                             activityMainBinding.emptyView.setVisibility(View.VISIBLE);
                         }
-                        activityMainBinding.drawerLayout.closeDrawer(Gravity.LEFT);
+                        activityMainBinding.dlMain.closeDrawer(GravityCompat.START);
                         activityMainBinding.tvHeadName.setText("Favourites");
                         break;
                     case R.id.comedy:
-                        catogeryData(Constants.Comedy, "Comedy");
+                        catogeryData(Constants.Comedy,  getResources().getString(R.string.comedy));
                         break;
 
                     case R.id.action:
-                        catogeryData(Constants.ACTION, "Action");
+                        catogeryData(Constants.ACTION,  getResources().getString(R.string.action));
                         break;
                     case R.id.romance:
-                        catogeryData(Constants.Romance, "Romance");
+                        catogeryData(Constants.Romance,  getResources().getString(R.string.romance));
                         break;
                     case R.id.science_fiction:
-                        catogeryData(Constants.Science_Fiction, "ScienceFiction");
+                        catogeryData(Constants.Science_Fiction,  getResources().getString(R.string.science_fiction));
                         break;
                     case R.id.crime:
-                        catogeryData(Constants.Crime, "Crime");
+                        catogeryData(Constants.Crime,  getResources().getString(R.string.crime));
                         break;
                     case R.id.drama:
-                        catogeryData(Constants.Drama, "Drama");
+                        catogeryData(Constants.Drama,  getResources().getString(R.string.drama));
                         break;
                     case R.id.horror:
-                        catogeryData(Constants.Horror, "Horror");
+                        catogeryData(Constants.Horror,  getResources().getString(R.string.horror));
                         break;
 
 
@@ -289,7 +289,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-        activityMainBinding.designNavigationView.bringToFront();
+        activityMainBinding.nvMain.bringToFront();
 
 
     }
@@ -300,7 +300,7 @@ public class MainActivity extends AppCompatActivity {
         activityMainBinding.rvPopularmovies.setVisibility(View.VISIBLE);
         activityMainBinding.emptyView.setVisibility(View.INVISIBLE);
         viewModel.getCategoriesList(catogeryValue);
-        activityMainBinding.drawerLayout.closeDrawer(Gravity.LEFT);
+        activityMainBinding.dlMain.closeDrawer(Gravity.LEFT);
         activityMainBinding.tvHeadName.setText(catogeryName);
 
     }
@@ -356,8 +356,8 @@ public class MainActivity extends AppCompatActivity {
                 activityMainBinding.emptyView.setVisibility(View.INVISIBLE);
                 viewModel.getMoviesList();
                 viewModel.getTopMoviesList();
-                activityMainBinding.drawerLayout.closeDrawer(Gravity.LEFT);
-                activityMainBinding.tvHeadName.setText("Home");
+                activityMainBinding.dlMain.closeDrawer(GravityCompat.START);
+                activityMainBinding.tvHeadName.setText( getResources().getString(R.string.home));
                 break;
 
             case "Favourites":
@@ -370,30 +370,30 @@ public class MainActivity extends AppCompatActivity {
                     activityMainBinding.rvPopularmovies.setVisibility(View.INVISIBLE);
                     activityMainBinding.emptyView.setVisibility(View.VISIBLE);
                 }
-                activityMainBinding.drawerLayout.closeDrawer(Gravity.LEFT);
-                activityMainBinding.tvHeadName.setText("Favourites");
+                activityMainBinding.dlMain.closeDrawer(GravityCompat.START);
+                activityMainBinding.tvHeadName.setText(getResources().getString(R.string.favourites));
                 break;
             case "comedy":
-                catogeryData(Constants.Comedy, "Comedy");
+                catogeryData(Constants.Comedy,  getResources().getString(R.string.comedy));
                 break;
 
             case "Action":
-                catogeryData(Constants.ACTION, "Action");
+                catogeryData(Constants.ACTION,  getResources().getString(R.string.action));
                 break;
             case "Romance":
-                catogeryData(Constants.Romance, "Romance");
+                catogeryData(Constants.Romance,  getResources().getString(R.string.romance));
                 break;
             case "ScienceFiction":
-                catogeryData(Constants.Science_Fiction, "ScienceFiction");
+                catogeryData(Constants.Science_Fiction, getResources().getString(R.string.science_fiction));
                 break;
             case"Crime":
-                catogeryData(Constants.Crime, "Crime");
+                catogeryData(Constants.Crime,  getResources().getString(R.string.crime));
                 break;
             case "Drama":
-                catogeryData(Constants.Drama, "Drama");
+                catogeryData(Constants.Drama,  getResources().getString(R.string.drama));
                 break;
             case "Horror":
-                catogeryData(Constants.Horror, "Horror");
+                catogeryData(Constants.Horror,  getResources().getString(R.string.horror));
                 break;
 
 

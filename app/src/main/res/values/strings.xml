@@ -4,4 +4,16 @@
     <string name="action_settings">Settings</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="home">Home</string>
+    <string name="no_favourites">No Favourites</string>
+    <string name="search">Search</string>
+    <string name="favourites">Favourites</string>
+    <string name="action">Action</string>
+    <string name="horror">Horror</string>
+    <string name="comedy">Comedy</string>
+    <string name="drama">Drama</string>
+    <string name="romance">Romance</string>
+    <string name="crime">Crime</string>
+    <string name="science_fiction">ScienceFiction</string>
+    <string name="ss">ScienceFiction</string>
 </resources>

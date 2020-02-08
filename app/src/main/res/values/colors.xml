@@ -9,4 +9,8 @@
     <color name="off_black">#2A2A2A</color>
     <color name="green_yellow">#ADFF2F</color>
     <color name="red">#ff0000</color>
+    <color name="gray_for_navigation">#808080</color>
+    <color name="black_main">#2A2A2A</color>
+    <color name="transparent_overlay">#15000000</color>
+    <color name="main_transparent_overlay">#50000000</color>
 </resources>

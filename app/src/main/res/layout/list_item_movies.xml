@@ -9,7 +9,7 @@
         android:orientation="vertical">
 
         <ProgressBar
-            android:id="@+id/movies_progress_bar"
+            android:id="@+id/pb_movies"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginEnd="8dp"
@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="40dp"
             android:layout_marginBottom="13dp"
-            android:background="#15000000"
+            android:background="@color/transparent_overlay"
             app:layout_constraintBottom_toBottomOf="@id/iv_photo"
             app:layout_constraintEnd_toEndOf="@id/iv_photo">
 
@@ -60,8 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="4dp"
-                android:text="TextView"
+                android:layout_marginEnd="4dp"
                 android:textColor="#fff"
                 android:textSize="18sp" />
 
@@ -75,8 +74,7 @@
             android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
             android:maxLines="2"
-            android:text=" long content"
-            android:textColor="#fff"
+            android:textColor="@color/white"
             android:textSize="14sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -90,8 +88,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginTop="40dp"
-            android:text=" long content"
-            android:textColor="#fff"
+            android:textColor="@color/white"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.014"

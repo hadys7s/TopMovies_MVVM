@@ -8,9 +8,9 @@ import androidx.lifecycle.ViewModel;
 import com.example.topmovies.Model.CastModel;
 import com.example.topmovies.Model.RateResponse;
 import com.example.topmovies.Model.SessionId;
+import com.example.topmovies.Model.TrailerModel;
 import com.example.topmovies.data.network.ApiClient;
 import com.example.topmovies.data.network.CastsResponseBody;
-import com.example.topmovies.Model.TrailerModel;
 import com.example.topmovies.data.network.TrailerResponseBody;
 
 import java.util.List;
@@ -20,15 +20,20 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class DetailsActivityViewModel extends ViewModel {
+    // list for cast
     MutableLiveData<List<CastModel>> CastList = new MutableLiveData<>();
-    MutableLiveData<TrailerModel> videolist = new MutableLiveData<>();
-    String videourl;
-    MutableLiveData<String> sessionId=new MutableLiveData<>();
+    // list for trailers
+    MutableLiveData<TrailerModel> videoList = new MutableLiveData<>();
+    // live data for session id
+    MutableLiveData<String> sessionId = new MutableLiveData<>();
+    // live data for error
     MutableLiveData<Throwable> error = new MutableLiveData<>();
+    // live data for rate the movie
     MutableLiveData<RateResponse> rate = new MutableLiveData<>();
 
 
-    public void getcastlist(Long MovieId) {
+    // Call for cast list
+    public void getCastlist(Long MovieId) {
         Call<CastsResponseBody> cast = ApiClient.getInstance().getCast(MovieId);
         cast.enqueue(new Callback<CastsResponseBody>() {
             @Override
@@ -47,9 +52,9 @@ public class DetailsActivityViewModel extends ViewModel {
 
     }
 
-    public void getSessionId()
-    {
-        Call<SessionId> sessionIdCall=ApiClient.getInstance().getSessionId();
+    // call to get session id so the user can access the rate
+    public void getSessionId() {
+        Call<SessionId> sessionIdCall = ApiClient.getInstance().getSessionId();
         sessionIdCall.enqueue(new Callback<SessionId>() {
             @Override
             public void onResponse(Call<SessionId> call, Response<SessionId> response) {
@@ -63,8 +68,9 @@ public class DetailsActivityViewModel extends ViewModel {
         });
     }
 
-    public void postrate(Long movieId ,String SessionId, String rateValue)
-    {    Call<RateResponse> popularMovies = ApiClient.getInstance().postRate(movieId,SessionId,rateValue);
+    //call for post the rate
+    public void postRate(Long movieId, String SessionId, String rateValue) {
+        Call<RateResponse> popularMovies = ApiClient.getInstance().postRate(movieId, SessionId, rateValue);
         popularMovies.enqueue(new Callback<RateResponse>() {
             @Override
             public void onResponse(Call<RateResponse> call, Response<RateResponse> response) {
@@ -82,6 +88,8 @@ public class DetailsActivityViewModel extends ViewModel {
         });
 
     }
+
+    // call to get video key for youtube Api
     public void getTrailerUrl(Long MovieId) {
 
         Call<TrailerResponseBody> video = ApiClient.getInstance().getTrailer(MovieId);
@@ -90,29 +98,25 @@ public class DetailsActivityViewModel extends ViewModel {
             public void onResponse(Call<TrailerResponseBody> call, Response<TrailerResponseBody> response) {
                 try {
                     if (!response.body().getResults().isEmpty())
-                    videolist.postValue(response.body().getResults().get(0));
+                        videoList.postValue(response.body().getResults().get(0));
                     else {
 
-                        videolist.postValue(null);
+                        videoList.postValue(null);
                     }
 
-                } catch (IndexOutOfBoundsException e)
-                {
+                } catch (IndexOutOfBoundsException e) {
 
                     return;
                 }
 
 
-
-
-                }
+            }
 
             @Override
             public void onFailure(Call<TrailerResponseBody> call, Throwable t) {
 
 
-
-                Log.v("casue=", String.valueOf(t.getCause()));
+                Log.v("cause = ", String.valueOf(t.getCause()));
 
             }
         });

@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.view.View;
@@ -49,24 +50,27 @@ import java.util.List;
 import jp.wasabeef.glide.transformations.BlurTransformation;
 
 public class DetailsActivity extends AppCompatActivity {
+    MovieDetailsBinding movieDetailsBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MovieDetailsBinding movieDetailsBinding = DataBindingUtil.setContentView(this, R.layout.movie_details);
+
+        movieDetailsBinding = DataBindingUtil.setContentView(this, R.layout.movie_details);
+        // we use middle layer class to migrate youtube with android x
         YouTubePlayerSupportFragmentX frag =
                 (YouTubePlayerSupportFragmentX) getSupportFragmentManager().findFragmentById(R.id.youtube_fragment);
 
+        // set rate bar no of stars
         movieDetailsBinding.rateBar.setNumStars(10);
 
+        //
         movieDetailsBinding.rateBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
 
 
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating,
                                         boolean fromUser) {
-
-                //rate.setValue(movieDetailsBinding.rateBar.getRating());
                 movieDetailsBinding.tvRateNumber.setVisibility(View.VISIBLE);
                 movieDetailsBinding.tvRateNumber.setText(rating + "");
                 movieDetailsBinding.btnRate.setEnabled(true);
@@ -80,25 +84,25 @@ public class DetailsActivity extends AppCompatActivity {
 
 
         DetailsAdapter detailsAdapter = new DetailsAdapter(this);
-        RequestOptions castCircleCrop = new RequestOptions();
-        castCircleCrop = castCircleCrop.transforms(new CenterCrop(), new RoundedCorners(120));
 
-
+        // initialize rv and adapter
         movieDetailsBinding.rvCast.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
         movieDetailsBinding.rvCast.setAdapter(detailsAdapter);
+
         MoviesModel moviesObject = getIntent().getParcelableExtra(Constants.MOVIE_INTENT_KEY);
+        // here we got the object from the main activity
         if (!moviesObject.getTitle().isEmpty())
             movieDetailsBinding.tvTitle.setText(moviesObject.getTitle());
         else {
-            // movieDetailsBinding.tvTitle.setText(moviesObject.getName());
+            movieDetailsBinding.tvTitle.setText(moviesObject.getOriginalTitle());
         }
 
-        movieDetailsBinding.tvHowWouldYouRate.setText("How would you rate " + moviesObject.getTitle()+" ?");
+        movieDetailsBinding.tvHowWouldYouRate.setText("How would you rate " + moviesObject.getTitle() + " ?");
 
         movieDetailsBinding.tvDescription.setText(textHead("Description : " + moviesObject.getOverview(), 13));
 
 
-        if (!moviesObject.getReleaseDate().isEmpty() | moviesObject.getReleaseDate() != "null") {
+        if (!TextUtils.isEmpty(moviesObject.getReleaseDate())) {
             movieDetailsBinding.tvReleaseDate.setText(textHead("Release Date : " + moviesObject.getReleaseDate(), 14));
         } else {
             movieDetailsBinding.tvReleaseDate.setText("Unkown");
@@ -106,7 +110,7 @@ public class DetailsActivity extends AppCompatActivity {
         }
         movieDetailsBinding.tvAvgRate.setText(moviesObject.getVoteAverage() + "/10");
         Glide.with(this)
-                .load("https://image.tmdb.org/t/p/original/" + moviesObject.getPosterPath())
+                .load(Constants.IMAGE_BASE_URL + moviesObject.getPosterPath())
                 .transform(new MultiTransformation(new BlurTransformation()))
                 .into(new SimpleTarget<Drawable>() {
                     @Override
@@ -115,29 +119,27 @@ public class DetailsActivity extends AppCompatActivity {
                     }
                 });
 
-        Glide.with(this)
-                .applyDefaultRequestOptions(castCircleCrop)
-                .load("https://image.tmdb.org/t/p/original/" + moviesObject.getBackdropPath())
-                .into(movieDetailsBinding.ivMovieImage);
+        if (!TextUtils.isEmpty(moviesObject.getBackdropPath())) {
+            glideloader(moviesObject.getBackdropPath());
 
+        } else {
+            glideloader(moviesObject.getPosterPath());
+        }
 
+        // view model instance
         DetailsActivityViewModel detailsActivityViewModel = ViewModelProviders.of(this).get(DetailsActivityViewModel.class);
-        detailsActivityViewModel.getcastlist(moviesObject.getId());
+        // call for the cast and trailer
+        detailsActivityViewModel.getCastlist(moviesObject.getId());
         detailsActivityViewModel.getTrailerUrl(moviesObject.getId());
 
 
-        detailsActivityViewModel.videolist.observe(this, new Observer<TrailerModel>() {
+        // when we got youtube key we give it to youtube api to show it
+        detailsActivityViewModel.videoList.observe(this, new Observer<TrailerModel>() {
             @Override
             public void onChanged(TrailerModel trailerModel) {
                 try {
+                    movieDetailsBinding.trailerName.setText(trailerModel.getName());
 
-
-                    if (trailerModel.getName() != null && !trailerModel.getName().isEmpty()) {
-
-
-                        movieDetailsBinding.trailerName.setText(trailerModel.getName());
-
-                    }
                 } catch (NullPointerException e) {
 
                     movieDetailsBinding.trailerName.setVisibility(View.GONE);
@@ -148,23 +150,21 @@ public class DetailsActivity extends AppCompatActivity {
                 try {
 
 
-                    if (trailerModel.getKey() != null && !trailerModel.getKey().isEmpty()) {
-                        if (frag != null) {
-                            frag.initialize(trailerModel.getKey(), new YouTubePlayer.OnInitializedListener() {
-                                @Override
-                                public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+                    frag.initialize(trailerModel.getKey(), new YouTubePlayer.OnInitializedListener() {
+                        @Override
+                        public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
 
-                                    youTubePlayer.cueVideo(trailerModel.getKey());
-                                }
-
-                                @Override
-                                public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-
-                                    movieDetailsBinding.llHideVideo.setVisibility(View.GONE);
-                                }
-                            });
+                            youTubePlayer.cueVideo(trailerModel.getKey());
                         }
-                    }
+
+                        @Override
+                        public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+
+                            movieDetailsBinding.llHideVideo.setVisibility(View.GONE);
+                        }
+                    });
+
+
                 } catch (NullPointerException e) {
 
 
@@ -176,28 +176,32 @@ public class DetailsActivity extends AppCompatActivity {
 
             }
         });
+        // when on click we request for session id
         movieDetailsBinding.btnRate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 detailsActivityViewModel.getSessionId();
             }
         });
-
+        // when we got the session id we post the rate we must we wait for session id to post rate
         detailsActivityViewModel.sessionId.observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                detailsActivityViewModel.postrate(moviesObject.getId(), detailsActivityViewModel.sessionId.getValue(),
+                detailsActivityViewModel.postRate(moviesObject.getId(), detailsActivityViewModel.sessionId.getValue(),
                         Float.toString(movieDetailsBinding.rateBar.getRating()));
             }
         });
 
 
+        // observe any change for rate to show rate status
         detailsActivityViewModel.rate.observe(this, new Observer<RateResponse>() {
             @Override
             public void onChanged(RateResponse rateResponse) {
-                Toast.makeText(getApplicationContext(), movieDetailsBinding.rateBar.getRating() + " Stars! " +"Rated", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), movieDetailsBinding.rateBar.getRating() + " Stars! " + "Rated", Toast.LENGTH_LONG).show();
             }
         });
+
+        // observe any change in cast list
         detailsActivityViewModel.CastList.observe(this, new Observer<List<CastModel>>() {
             @Override
             public void onChanged(List<CastModel> castModels) {
@@ -211,10 +215,10 @@ public class DetailsActivity extends AppCompatActivity {
             @Override
             public void onAvailable(Network network) {
                 // network
-                detailsActivityViewModel.getcastlist(moviesObject.getId());
+                detailsActivityViewModel.getCastlist(moviesObject.getId());
                 detailsActivityViewModel.getTrailerUrl(moviesObject.getId());
                 Glide.with(getApplicationContext())
-                        .load("https://image.tmdb.org/t/p/original/" + moviesObject.getPosterPath())
+                        .load(Constants.IMAGE_BASE_URL + moviesObject.getPosterPath())
                         .transform(new MultiTransformation(new BlurTransformation()))
                         .into(new SimpleTarget<Drawable>() {
                             @Override
@@ -246,7 +250,7 @@ public class DetailsActivity extends AppCompatActivity {
 
     }
 
-
+    // to style head for descrption  etc
     private Spannable textHead(String text, int end) {
         Spannable spannable = new SpannableString(text);
         spannable.setSpan(
@@ -257,6 +261,17 @@ public class DetailsActivity extends AppCompatActivity {
         return spannable;
 
 
+    }
+
+    private void glideloader(String imgurl) {
+        // rounded image effect
+        RequestOptions castCircleCrop = new RequestOptions();
+        castCircleCrop = castCircleCrop.transforms(new CenterCrop(), new RoundedCorners(120));
+
+        Glide.with(this)
+                .applyDefaultRequestOptions(castCircleCrop)
+                .load(Constants.IMAGE_BASE_URL + imgurl)
+                .into(movieDetailsBinding.ivMovieImage);
     }
 
 

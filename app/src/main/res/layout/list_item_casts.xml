@@ -9,7 +9,7 @@
         android:orientation="vertical"
         android:padding="3dp">
         <ProgressBar
-            android:id="@+id/cast_progress_bar"
+            android:id="@+id/pb_cast"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginEnd="8dp"
@@ -38,8 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="char"
-            android:textColor="#fff"
+            android:textColor="@color/white"
             android:textSize="12sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@+id/iv_actress"
@@ -52,8 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="45dp"
-            android:text="textview"
-            android:textColor="#fff"
+            android:textColor="@color/white"
             android:textSize="12sp"
             android:maxLines="3"
             android:layout_marginBottom="20dp"
@@ -62,11 +60,5 @@
             app:layout_constraintHorizontal_bias="0.29"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_actress" />
-
-        <!-- <View
-             android:layout_width="match_parent"
-             android:layout_height="1dp"
-             android:layout_marginTop="10dp"
-             android:background="@android:color/darker_gray" />-->
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

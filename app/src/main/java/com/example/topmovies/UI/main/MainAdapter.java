@@ -78,27 +78,24 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
         }
 
-
-        //
-        try {
-
-
-            if (!moviesModel.getTitle().isEmpty()) {
-                holder.binding.tvTitle.setText(moviesModel.getTitle());
-
-            }
-        } catch (Exception e) {
-
-            //   holder.binding.tvTitle.setText(moviesModel.getName());
-
-        }
-        if (TextUtils.isEmpty(moviesModel.getBackdropPath())) {
-            glideloader(moviesModel.getPosterPath(), holder);
+        // if no title get original title
+        if (!moviesModel.getTitle().isEmpty()) {
+            holder.binding.tvTitle.setText(moviesModel.getTitle());
 
         } else {
 
-            glideloader(moviesModel.getBackdropPath(), holder);
+            holder.binding.tvTitle.setText(moviesModel.getOriginalTitle());
         }
+
+        // if no image get the poster
+        if (!TextUtils.isEmpty(moviesModel.getBackdropPath())) {
+            glideloader(moviesModel.getBackdropPath(), holder);
+
+        } else {
+
+            glideloader(moviesModel.getPosterPath(), holder);
+        }
+
         try {
             holder.binding.tvReleaseDate.setText(releaseYear(moviesModel.getReleaseDate()));
         } catch (Exception e) {
@@ -107,11 +104,13 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         }
     }
 
+    // method to get only year from the date
     private String releaseYear(String date) {
         return date.substring(0, 4);
     }
 
     void glideloader(String original, ViewHolder holder) {
+        // to apply rounded image
         RequestOptions requestOptions = new RequestOptions();
         requestOptions = requestOptions.transforms(new CenterCrop(), new RoundedCorners(16));
         Glide.with(context)
@@ -120,13 +119,13 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        holder.binding.moviesProgressBar.setVisibility(View.GONE);
+                        holder.binding.pbMovies.setVisibility(View.GONE);
                         return false;
                     }
 
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        holder.binding.moviesProgressBar.setVisibility(View.GONE);
+                        holder.binding.pbMovies.setVisibility(View.GONE);
                         return false;
                     }
                 })
@@ -145,15 +144,15 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         public ViewHolder(@NonNull ListItemMoviesBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
+            //animation instance
             RotateAnimation rotateAnimation = (RotateAnimation) AnimationUtils.loadAnimation(context, R.anim.rotate);
             binding.btnFav.setOnLikeListener(new OnLikeListener() {
                 @Override
                 public void liked(LikeButton likeButton) {
                     binding.star.startAnimation(rotateAnimation);
                     binding.btnFav.setLiked(true);
-                    // binding.btnFav.startAnimation(animation);
                     viewModel.addfavouriteMovie(moviesList.get(getAdapterPosition()));
-                    //  binding.btnFav.setImageResource(R.drawable.fav_inline);
+                    // set favourite value to 1 is liked(data base)
                     viewModel.updateFavouriteValue(moviesList.get(getAdapterPosition()).getId(), 1);
 
 
@@ -161,47 +160,42 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
                 @Override
                 public void unLiked(LikeButton likeButton) {
-                    binding.btnFav.setLiked(false);
                     binding.star.startAnimation(rotateAnimation);
                     viewModel.updateFavouriteValue(moviesList.get(getAdapterPosition()).getId(), 0);
-                    if (activityMainBinding.tvHeadName.getText().toString() == "Favourites") {
+                    // if we are in favourite and the list is empty make recycler view invisible and show no favourites
+                    if (activityMainBinding.tvHeadName.getText()== "Favourites") {
                         if (viewModel.getFavouritesMoviesList().isEmpty()) {
                             activityMainBinding.rvPopularmovies.setVisibility(View.INVISIBLE);
                             activityMainBinding.emptyView.setVisibility(View.VISIBLE);
                         } else {
-                            binding.btnFav.setLiked(false);
                             addMoviesList(viewModel.getFavouritesMoviesList());
 
 
                         }
-                    } else {
-
                     }
 
-
                 }
             });
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onItemClicked.onListItemCLicked(moviesList.get(getAdapterPosition()));
-                }
-            });
+            //on item click
+            itemView.setOnClickListener(v -> onItemClicked.onListItemCLicked(moviesList.get(getAdapterPosition())));
         }
 
     }
 
+    // add movies to the adapter
     public void addMoviesList(List<MoviesModel> moviesList) {
         this.moviesList = moviesList;
         notifyDataSetChanged();
     }
 
-    public void loadmore(List<MoviesModel> moviesList) {
+    // load more to the exist list
+    public void loadMore(List<MoviesModel> moviesList) {
         this.moviesList.addAll(moviesList);
         notifyDataSetChanged();
     }
 
+    //clear the adapter
     public void clear() {
         this.moviesList.clear();
         notifyDataSetChanged();
@@ -210,9 +204,3 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
 
 }
-
-
-//unlike
-
-
-//like

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.drawerlayout.widget.DrawerLayout
-        android:id="@+id/drawerLayout"
+        android:id="@+id/dl_Main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -14,24 +14,24 @@
 
 
         <com.google.android.material.navigation.NavigationView
-            android:id="@+id/design_navigation_view"
-            android:layout_width="200dp"
+            android:id="@+id/nv_Main"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="start"
             app:headerLayout="@layout/header"
-            android:background="#808080"
-            app:itemIconTint="#fff"
-            app:itemTextColor="#fff"
+            android:background="@color/gray_for_navigation"
+            app:itemIconTint="@color/white"
+            app:itemTextColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/drawerLayout"
+            app:layout_constraintStart_toStartOf="@+id/dl_Main"
             app:layout_constraintTop_toTopOf="parent"
-            app:menu="@menu/menudrawer" />
+            app:menu="@menu/menu_drawer" />
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#2A2A2A"
+            android:background="@color/black_main"
             android:paddingTop="3dp"
             android:paddingEnd="3dp"
             tools:context=".UI.main.MainActivity">
@@ -78,8 +78,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="5dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="5dp"
                     android:src="@drawable/ic_menu_black_24dp" />
 
                 <TextView
@@ -88,7 +88,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="50dp"
-                    android:text="Home"
+                    android:text="@string/home"
                     android:textColor="@color/white"
                     android:textSize="22sp"
 
@@ -105,7 +105,7 @@
                 app:layout_constraintStart_toStartOf="@id/rv_top"
                 android:textSize="22sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:text="No Favourites" />
+                android:text="@string/no_favourites" />
 
 
 
