@@ -26,6 +26,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.example.topmovies.Model.MoviesModel;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     MainActivityViewModel viewModel;
     MainAdapter mainAdapter;
     ActivityMainBinding activityMainBinding;
+    Context context=this;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +79,16 @@ public class MainActivity extends AppCompatActivity {
                 .centerCrop()
                 .into(nav_header);
 
+        //refresh
+
+       activityMainBinding.refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                returnToRightCatogery(activityMainBinding.tvHeadName.getText().toString());
+                activityMainBinding.refresh.setRefreshing(false);
+            }
+        });
 
 
 
@@ -156,15 +168,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //get popular movies from the api
-        viewModel.getMoviesList();
         viewModel.moviesList.observe(this, new Observer<List<MoviesModel>>() {
             @Override
             public void onChanged(List<MoviesModel> moviesModels) {
-                viewModel.deleteCashedMoviesList();
                 mainAdapter.addMoviesList(moviesModels);
-                viewModel.cashMoviesList(moviesModels);
             }
         });
+
 
         // get searchresults from api
         viewModel.moviesSearchedList.observe(this, new Observer<List<MoviesModel>>() {
@@ -173,13 +183,26 @@ public class MainActivity extends AppCompatActivity {
                 mainAdapter.addMoviesList(moviesModels);
             }
         });
-
-        //top movies load more list
-        viewModel.loadmore.observe(this, new Observer<List<MoviesModel>>() {
+        viewModel.moviesList.observe(this, new Observer<List<MoviesModel>>() {
             @Override
             public void onChanged(List<MoviesModel> moviesModels) {
                 mainAdapter.loadMore(moviesModels);
-                viewModel.cashMoviesList(moviesModels);
+            }
+        });
+
+        //top movies load more list
+        viewModel.getTopMoviesList(1);
+        viewModel.loadmore.observe(this, new Observer<List<MoviesModel>>() {
+            boolean check = false;
+            @Override
+            public void onChanged(List<MoviesModel> moviesModels) {
+                if (!check) {
+                    viewModel.deleteCashedMoviesList();
+                    mainAdapter.clear();
+                    viewModel.cashMoviesList(moviesModels);
+                    check=true;
+                }
+                mainAdapter.loadMore(moviesModels);
             }
         });
 
@@ -187,18 +210,25 @@ public class MainActivity extends AppCompatActivity {
         viewModel.error.observe(this, new Observer<Throwable>() {
             @Override
             public void onChanged(Throwable throwable) {
-                Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "No Internet Connection", Toast.LENGTH_LONG).show();
             }
         });
         //load more when scroll in home  with top movies
-        activityMainBinding.rvPopularmovies.addOnScrollListener(new RecyclerView.OnScrollListener() {
+       activityMainBinding.rvPopularmovies.addOnScrollListener(new RecyclerView.OnScrollListener() {
             boolean check = false;
 
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                if (!check) {
-                    viewModel.getTopMoviesList();
-                    check = true;
+              if (!check) {
+                  viewModel.getTopMoviesList(2);
+                  viewModel.getTopMoviesList(3);
+                  viewModel.getTopMoviesList(4);
+                  viewModel.getTopMoviesList(5);
+                  viewModel.getTopMoviesList(6);
+                  viewModel.getTopMoviesList(7);
+                  viewModel.getTopMoviesList(8);
+                  viewModel.getTopMoviesList(9);
+                  check = true;
                 }
                 super.onScrolled(recyclerView, dx, dy);
             }
@@ -210,8 +240,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAvailable(Network network) {
                 // network
-                viewModel.getMoviesList();
-                viewModel.getTopMoviesList();
+
 
             }
 
@@ -241,8 +270,7 @@ public class MainActivity extends AppCompatActivity {
                         mainAdapter.clear();
                         activityMainBinding.rvPopularmovies.setVisibility(View.VISIBLE);
                         activityMainBinding.emptyView.setVisibility(View.INVISIBLE);
-                        viewModel.getMoviesList();
-                        viewModel.getTopMoviesList();
+                        home();
                         activityMainBinding.dlMain.closeDrawer(GravityCompat.START);
                         activityMainBinding.tvHeadName.setText( getResources().getString(R.string.home));
                         break;
@@ -299,7 +327,8 @@ public class MainActivity extends AppCompatActivity {
         mainAdapter.clear();
         activityMainBinding.rvPopularmovies.setVisibility(View.VISIBLE);
         activityMainBinding.emptyView.setVisibility(View.INVISIBLE);
-        viewModel.getCategoriesList(catogeryValue);
+        viewModel.getCategoriesList(catogeryValue,1);
+        viewModel.getCategoriesList(catogeryValue,2);
         activityMainBinding.dlMain.closeDrawer(Gravity.LEFT);
         activityMainBinding.tvHeadName.setText(catogeryName);
 
@@ -313,9 +342,8 @@ public class MainActivity extends AppCompatActivity {
 
         if (activityMainBinding.tvHeadName.getText().toString()!="Home")
         {
-
-            viewModel.getMoviesList();
-            viewModel.getTopMoviesList();
+            mainAdapter.clear();
+            home();
             activityMainBinding.tvHeadName.setText("Home");
         }
         else {
@@ -354,8 +382,8 @@ public class MainActivity extends AppCompatActivity {
             case "Home":
                 activityMainBinding.rvPopularmovies.setVisibility(View.VISIBLE);
                 activityMainBinding.emptyView.setVisibility(View.INVISIBLE);
-                viewModel.getMoviesList();
-                viewModel.getTopMoviesList();
+                mainAdapter.clear();
+                home();
                 activityMainBinding.dlMain.closeDrawer(GravityCompat.START);
                 activityMainBinding.tvHeadName.setText( getResources().getString(R.string.home));
                 break;
@@ -399,6 +427,21 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+
+
+
+    }
+    void home()
+    {
+        viewModel.getTopMoviesList(1);
+        viewModel.getTopMoviesList(2);
+        viewModel.getTopMoviesList(3);
+        viewModel.getTopMoviesList(4);
+        viewModel.getTopMoviesList(5);
+        viewModel.getTopMoviesList(6);
+        viewModel.getTopMoviesList(7);
+        viewModel.getTopMoviesList(8);
+        viewModel.getTopMoviesList(9);
 
     }
 

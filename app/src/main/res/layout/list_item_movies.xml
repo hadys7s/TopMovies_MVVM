@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="4dp"
         android:orientation="vertical">
 
         <ProgressBar
@@ -96,12 +98,13 @@
             app:layout_constraintTop_toBottomOf="@+id/iv_photo" />
 
             <com.like.LikeButton
-                app:icon_type="heart"
+                app:like_drawable="@drawable/heart_in"
+                app:unlike_drawable="@drawable/heart_out"
                 android:id="@+id/btn_fav"
                 android:layout_width="wrap_content"
                 app:anim_scale_factor="1.5"
+                app:icon_size="35dp"
                 android:animateLayoutChanges="true"
-                app:icon_size="30dp"
                 app:dots_primary_color="@color/red"
                 app:dots_secondary_color="@color/red"
                 android:layout_height="wrap_content"

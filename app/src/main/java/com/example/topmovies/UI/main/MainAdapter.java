@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.RotateAnimation;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -163,7 +164,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
                     binding.star.startAnimation(rotateAnimation);
                     viewModel.updateFavouriteValue(moviesList.get(getAdapterPosition()).getId(), 0);
                     // if we are in favourite and the list is empty make recycler view invisible and show no favourites
-                    if (activityMainBinding.tvHeadName.getText()== "Favourites") {
+                    if (activityMainBinding.tvHeadName.getText() == "Favourites") {
                         if (viewModel.getFavouritesMoviesList().isEmpty()) {
                             activityMainBinding.rvPopularmovies.setVisibility(View.INVISIBLE);
                             activityMainBinding.emptyView.setVisibility(View.VISIBLE);

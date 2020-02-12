@@ -28,11 +28,11 @@ public interface ApiInterface {
 
     //here we call discover to get specific catogery
     @GET("discover/movie")
-    Call<MoviesResponseBody> getCatogries(@QueryMap Map<String, String> quires);
+    Call<MoviesResponseBody> getCatogries(@QueryMap Map<String, String> quires,@Query("page") int page);
     //get top rated movies
 
-    @GET("movie/top_rated")
-    Call<MoviesResponseBody> getTopRatedMovies();
+    @GET("movie/popular")
+    Call<MoviesResponseBody> getPopularRatedMovies(@Query("page") int page);
 
     //here we call for search
     @GET("search/movie")

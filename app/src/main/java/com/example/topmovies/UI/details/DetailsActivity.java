@@ -32,6 +32,7 @@ import com.bumptech.glide.load.MultiTransformation;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.topmovies.Model.CastModel;
@@ -112,11 +113,16 @@ public class DetailsActivity extends AppCompatActivity {
         Glide.with(this)
                 .load(Constants.IMAGE_BASE_URL + moviesObject.getPosterPath())
                 .transform(new MultiTransformation(new BlurTransformation()))
-                .into(new SimpleTarget<Drawable>() {
+                .into(new CustomTarget<Drawable>() {
                     @Override
                     public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                         movieDetailsBinding.clDetailsBackground.setBackground(resource);
                     }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                    }
+
                 });
 
         if (!TextUtils.isEmpty(moviesObject.getBackdropPath())) {

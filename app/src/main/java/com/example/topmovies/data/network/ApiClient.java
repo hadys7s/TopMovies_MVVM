@@ -17,8 +17,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class ApiClient {
-    static ApiClient instance = null;
-    ApiInterface apiInterface;
+   private static ApiClient instance = null;
+    private ApiInterface apiInterface;
 
     //singleton to take only one instance
     public static ApiClient getInstance() {
@@ -31,7 +31,7 @@ public class ApiClient {
 
 
     // here we build our call
-    public ApiClient() {
+    private ApiClient() {
         //for debug the response
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -61,13 +61,9 @@ public class ApiClient {
 
     }
 
-    public Call<MoviesResponseBody> getPopularMovies() {
-        return apiInterface.getTrendingMovies();
 
-    }
-
-    public Call<MoviesResponseBody> getTopRatedMovies() {
-        return apiInterface.getTopRatedMovies();
+    public Call<MoviesResponseBody> getPopularRatedMovies(int page) {
+        return apiInterface.getPopularRatedMovies(page);
 
     }
 
@@ -87,14 +83,14 @@ public class ApiClient {
     }
 
     //get calories require to parameters we attach it into one hashmap
-    public Call<MoviesResponseBody> getCategories(String catogeryId) {
+    public Call<MoviesResponseBody> getCategories(String catogeryId,int page) {
 
         Map<String, String> data = new HashMap<>();
         //sort
         data.put("sort_by", "popularity.desc");
         //catogery id
         data.put("with_genres", catogeryId);
-        return apiInterface.getCatogries(data);
+        return apiInterface.getCatogries(data,page);
 
 
     }

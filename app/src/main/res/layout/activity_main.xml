@@ -28,6 +28,10 @@
             app:menu="@menu/menu_drawer" />
 
 
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:layout_width="match_parent"
+            android:id="@+id/refresh"
+            android:layout_height="match_parent">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -108,7 +112,6 @@
                 android:text="@string/no_favourites" />
 
 
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_popularmovies"
                 android:layout_width="0dp"
@@ -123,6 +126,8 @@
                 app:layout_constraintTop_toBottomOf="@+id/rv_top" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
     </androidx.drawerlayout.widget.DrawerLayout>
 
 

@@ -74,7 +74,7 @@ public class MainActivityViewModel extends AndroidViewModel {
     }
 
     // the call for the main movies in home
-    public void getMoviesList() {
+   /* public void getMoviesList() {
         Call<MoviesResponseBody> popularMovies = ApiClient.getInstance().getPopularMovies();
         popularMovies.enqueue(new Callback<MoviesResponseBody>() {
             @Override
@@ -91,11 +91,11 @@ public class MainActivityViewModel extends AndroidViewModel {
             }
         });
 
-    }
+    }*/
 
     //call for getting catogery like action,romance etc....
-    public void getCategoriesList(String catogeryId) {
-        Call<MoviesResponseBody> popularMovies = ApiClient.getInstance().getCategories(catogeryId);
+    public void getCategoriesList(String catogeryId,int page) {
+        Call<MoviesResponseBody> popularMovies = ApiClient.getInstance().getCategories(catogeryId,page);
         popularMovies.enqueue(new Callback<MoviesResponseBody>() {
             @Override
             public void onResponse(Call<MoviesResponseBody> call, Response<MoviesResponseBody> response) {
@@ -115,8 +115,8 @@ public class MainActivityViewModel extends AndroidViewModel {
     }
 
     // Call for Top Movies (Home)
-    public void getTopMoviesList() {
-        Call<MoviesResponseBody> popularMovies = ApiClient.getInstance().getTopRatedMovies();
+    public void getTopMoviesList(int page) {
+        Call<MoviesResponseBody> popularMovies = ApiClient.getInstance().getPopularRatedMovies(page);
         popularMovies.enqueue(new Callback<MoviesResponseBody>() {
             @Override
             public void onResponse(Call<MoviesResponseBody> call, Response<MoviesResponseBody> response) {
