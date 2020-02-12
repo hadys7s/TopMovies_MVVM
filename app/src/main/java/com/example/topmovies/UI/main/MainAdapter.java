@@ -190,6 +190,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         notifyDataSetChanged();
     }
 
+
+
     // load more to the exist list
     public void loadMore(List<MoviesModel> moviesList) {
         this.moviesList.addAll(moviesList);

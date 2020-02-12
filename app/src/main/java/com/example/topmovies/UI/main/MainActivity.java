@@ -186,6 +186,8 @@ public class MainActivity extends AppCompatActivity {
         viewModel.moviesList.observe(this, new Observer<List<MoviesModel>>() {
             @Override
             public void onChanged(List<MoviesModel> moviesModels) {
+                moviesModels.remove(moviesModels.size()-1);
+                moviesModels.remove(moviesModels.size()-2);
                 mainAdapter.loadMore(moviesModels);
             }
         });
