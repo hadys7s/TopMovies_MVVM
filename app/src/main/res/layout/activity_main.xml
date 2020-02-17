@@ -38,7 +38,7 @@
             android:background="@color/black_main"
             android:paddingTop="3dp"
             android:paddingEnd="3dp"
-            tools:context=".UI.main.MainActivity">
+            tools:context=".UI.main.MoviesActivity">
 
             <RelativeLayout
                 android:id="@+id/rv_top"

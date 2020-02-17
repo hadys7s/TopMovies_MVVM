@@ -1,6 +1,8 @@
 package com.example.topmovies.UI.main;
 
 import android.app.Application;
+import android.os.StrictMode;
+import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -12,17 +14,19 @@ import com.example.topmovies.Model.MoviesModel;
 import com.example.topmovies.data.db.MoviesDb;
 import com.example.topmovies.data.network.ApiClient;
 import com.example.topmovies.data.network.MoviesResponseBody;
-
+import com.example.topmovies.utils.Utils;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivityViewModel extends AndroidViewModel {
+public class MoviesActivityViewModel extends AndroidViewModel {
     //list for main movies home
-    MutableLiveData<List<MoviesModel>> moviesList = new MutableLiveData<>();
+    MutableLiveData<List<MoviesModel>> catogiresMoviesList = new MutableLiveData<>();
     // list for search results
+    //first call list
+    MutableLiveData<List<MoviesModel>> moviesList = new MutableLiveData<>();
     MutableLiveData<List<MoviesModel>> moviesSearchedList = new MutableLiveData<>();
     //list for cached movies
     MutableLiveData<List<MoviesModel>> moviesCashedList = new MutableLiveData<>();
@@ -30,9 +34,14 @@ public class MainActivityViewModel extends AndroidViewModel {
     MutableLiveData<List<MoviesModel>> loadmore = new MutableLiveData<>();
     // live data to observe any error
     MutableLiveData<Throwable> error = new MutableLiveData<>();
+    MutableLiveData<String> noFavorites = new MutableLiveData<>();
+    MutableLiveData<List<MoviesModel>> favoritesList = new MutableLiveData<>();
+
+    boolean check = false;
 
 
-    public MainActivityViewModel(@NonNull Application application) {
+
+    public MoviesActivityViewModel(@NonNull Application application) {
         super(application);
     }
 
@@ -43,28 +52,37 @@ public class MainActivityViewModel extends AndroidViewModel {
         return newsDB.moviesDao().getFavValue(id);
     }
 
-    public List<MoviesModel> getFavouritesMoviesList() {
-        return newsDB.moviesDao().getFavouriteMoviesList();
+    public void getFavouritesMoviesList() {
+
+        if (newsDB.moviesDao().getFavouriteMoviesList()==null||newsDB.moviesDao().getFavouriteMoviesList().isEmpty())
+        {
+            noFavorites.setValue("No favourites");
+
+
+        }
+        else
+        {
+            favoritesList.setValue(newsDB.moviesDao().getFavouriteMoviesList());
+
+        }
     }
 
 
     public void updateFavouriteValue(long id, int favValue) {
         newsDB.moviesDao().updateFavourite(favValue, id);
+    }
 
+    public List<MoviesModel> getCashedMoviesList() {
+       return newsDB.moviesDao().getCashedMoviesList();
 
     }
 
-    public void getCashedMoviesList() {
-        moviesCashedList.setValue(newsDB.moviesDao().getCashedMoviesList());
-
-    }
-
-    public void deleteCashedMoviesList() {
+    private void deleteCashedMoviesList() {
 
         newsDB.moviesDao().deleteCachedMovies();
     }
 
-    public void cashMoviesList(List<MoviesModel> cashedlist) {
+    private void cashMoviesList(List<MoviesModel> cashedlist) {
         newsDB.moviesDao().addMoviesList(cashedlist);
     }
 
@@ -73,25 +91,8 @@ public class MainActivityViewModel extends AndroidViewModel {
         newsDB.moviesDao().addFavouriteMovie(moviesFav);
     }
 
-    // the call for the main movies in home
-   /* public void getMoviesList() {
-        Call<MoviesResponseBody> popularMovies = ApiClient.getInstance().getPopularMovies();
-        popularMovies.enqueue(new Callback<MoviesResponseBody>() {
-            @Override
-            public void onResponse(Call<MoviesResponseBody> call, Response<MoviesResponseBody> response) {
-                moviesList.setValue(response.body().getResults());
-                Log.v("Url", call.request().url().toString());
 
-            }
 
-            @Override
-            public void onFailure(Call<MoviesResponseBody> call, Throwable t) {
-                error.setValue(t);
-
-            }
-        });
-
-    }*/
 
     //call for getting catogery like action,romance etc....
     public void getCategoriesList(String catogeryId,int page) {
@@ -99,7 +100,7 @@ public class MainActivityViewModel extends AndroidViewModel {
         popularMovies.enqueue(new Callback<MoviesResponseBody>() {
             @Override
             public void onResponse(Call<MoviesResponseBody> call, Response<MoviesResponseBody> response) {
-                moviesList.setValue(response.body().getResults());
+                catogiresMoviesList.setValue(response.body().getResults());
                 Log.v("Url", call.request().url().toString());
 
             }
@@ -107,8 +108,6 @@ public class MainActivityViewModel extends AndroidViewModel {
             @Override
             public void onFailure(Call<MoviesResponseBody> call, Throwable t) {
                 error.setValue(t);
-
-
             }
         });
 
@@ -120,16 +119,31 @@ public class MainActivityViewModel extends AndroidViewModel {
         popularMovies.enqueue(new Callback<MoviesResponseBody>() {
             @Override
             public void onResponse(Call<MoviesResponseBody> call, Response<MoviesResponseBody> response) {
-                loadmore.setValue(response.body().getResults());
-                Log.v("Url", call.request().url().toString());
+
+                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                StrictMode.setThreadPolicy(policy);
+                if (Utils.isInternetAvailable(getApplication())) {
+                    if (!check) {
+                        deleteCashedMoviesList();
+                        cashMoviesList(response.body().getResults());
+                        check=true;
+                        moviesList.setValue(response.body().getResults());
+                    }
+                    loadmore.setValue(response.body().getResults());
+                    Log.v("Url", call.request().url().toString());
+
+                }
+                else
+                {
+                    moviesCashedList.setValue(getCashedMoviesList());
+                }
 
             }
 
             @Override
             public void onFailure(Call<MoviesResponseBody> call, Throwable t) {
+                moviesCashedList.setValue(getCashedMoviesList());
                 error.setValue(t);
-
-
             }
         });
 
@@ -143,20 +157,24 @@ public class MainActivityViewModel extends AndroidViewModel {
             public void onResponse(Call<MoviesResponseBody> call, Response<MoviesResponseBody> response) {
                 moviesCashedList.setValue(response.body().getResults());
                 Log.v("Url2", call.request().url().toString());
-
             }
 
             @Override
             public void onFailure(Call<MoviesResponseBody> call, Throwable t) {
-
-
                 error.setValue(t);
-
 
             }
         });
 
+
+
     }
+
+
+
+
+
+
 
 
 }

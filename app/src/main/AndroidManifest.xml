@@ -14,12 +14,12 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".UI.main.MainActivity"></activity>
+        <activity android:name=".UI.main.MoviesActivity"></activity>
         <activity
             android:name=".UI.details.DetailsActivity"
             android:label="@string/title_activity_details"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".UI.Splash.Splash"
+        <activity android:name=".UI.Splash.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

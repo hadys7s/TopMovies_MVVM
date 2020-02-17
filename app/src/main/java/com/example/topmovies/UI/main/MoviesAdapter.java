@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.RotateAnimation;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,16 +33,16 @@ import com.like.OnLikeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
+public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder> {
 
     private Context context;
     private OnItemClicked onItemClicked;
-    MainActivityViewModel viewModel;
+    MoviesActivityViewModel viewModel;
     ActivityMainBinding activityMainBinding;
 
     // constructor to get adapter needs from main activity
-    public MainAdapter(Context context, MainActivityViewModel mainActivityViewModel,
-                       ActivityMainBinding activityMainBinding, OnItemClicked onItemClicked) {
+    public MoviesAdapter(Context context, MoviesActivityViewModel mainActivityViewModel,
+                         ActivityMainBinding activityMainBinding, OnItemClicked onItemClicked) {
         this.context = context;
         this.onItemClicked = onItemClicked;
         viewModel = mainActivityViewModel;
@@ -57,7 +56,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
     @NonNull
     @Override
     //inflate the view form data binding
-    public MainAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MoviesAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         ListItemMoviesBinding binding = DataBindingUtil.inflate(layoutInflater, R.layout.list_item_movies, parent, false);
         return new ViewHolder(binding);
@@ -66,7 +65,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
 
     @Override
-    public void onBindViewHolder(@NonNull MainAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MoviesAdapter.ViewHolder holder, int position) {
         MoviesModel moviesModel = moviesList.get(position);
         holder.binding.tvAvgRate.setText(moviesModel.getVoteAverage() + "");
 
@@ -165,14 +164,12 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
                     viewModel.updateFavouriteValue(moviesList.get(getAdapterPosition()).getId(), 0);
                     // if we are in favourite and the list is empty make recycler view invisible and show no favourites
                     if (activityMainBinding.tvHeadName.getText() == "Favourites") {
-                        if (viewModel.getFavouritesMoviesList().isEmpty()) {
-                            activityMainBinding.rvPopularmovies.setVisibility(View.INVISIBLE);
-                            activityMainBinding.emptyView.setVisibility(View.VISIBLE);
-                        } else {
-                            addMoviesList(viewModel.getFavouritesMoviesList());
 
 
-                        }
+                            viewModel.getFavouritesMoviesList();
+
+
+
                     }
 
                 }
