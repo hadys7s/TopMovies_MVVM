@@ -2,7 +2,6 @@ package com.example.topmovies.UI.main;
 
 import android.app.Application;
 import android.os.StrictMode;
-import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -15,6 +14,7 @@ import com.example.topmovies.data.db.MoviesDb;
 import com.example.topmovies.data.network.ApiClient;
 import com.example.topmovies.data.network.MoviesResponseBody;
 import com.example.topmovies.utils.Utils;
+
 import java.util.List;
 
 import retrofit2.Call;
@@ -40,63 +40,57 @@ public class MoviesActivityViewModel extends AndroidViewModel {
     boolean check = false;
 
 
-
     public MoviesActivityViewModel(@NonNull Application application) {
         super(application);
     }
 
     // build the data base
-    MoviesDb newsDB = Room.databaseBuilder(getApplication(), MoviesDb.class, MoviesDb.DATABASE_NAME).allowMainThreadQueries().build();
+    MoviesDb moviesDB = Room.databaseBuilder(getApplication(), MoviesDb.class, MoviesDb.DATABASE_NAME).allowMainThreadQueries().build();
 
     public int getFavValue(Long id) {
-        return newsDB.moviesDao().getFavValue(id);
+        return moviesDB.moviesDao().getFavValue(id);
     }
 
     public void getFavouritesMoviesList() {
 
-        if (newsDB.moviesDao().getFavouriteMoviesList()==null||newsDB.moviesDao().getFavouriteMoviesList().isEmpty())
-        {
+        if (moviesDB.moviesDao().getFavouriteMoviesList() == null || moviesDB.moviesDao().getFavouriteMoviesList().isEmpty()) {
             noFavorites.setValue("No favourites");
 
 
-        }
-        else
-        {
-            favoritesList.setValue(newsDB.moviesDao().getFavouriteMoviesList());
+        } else {
+            favoritesList.setValue(moviesDB.moviesDao().getFavouriteMoviesList());
 
         }
     }
 
 
     public void updateFavouriteValue(long id, int favValue) {
-        newsDB.moviesDao().updateFavourite(favValue, id);
+        moviesDB.moviesDao().updateFavourite(favValue, id);
     }
 
     public List<MoviesModel> getCashedMoviesList() {
-       return newsDB.moviesDao().getCashedMoviesList();
+        return moviesDB.moviesDao().getCashedMoviesList();
 
     }
 
     private void deleteCashedMoviesList() {
 
-        newsDB.moviesDao().deleteCachedMovies();
+        moviesDB.moviesDao().deleteCachedMovies();
     }
 
     private void cashMoviesList(List<MoviesModel> cashedlist) {
-        newsDB.moviesDao().addMoviesList(cashedlist);
+        moviesDB.moviesDao().addMoviesList(cashedlist);
     }
 
     void addfavouriteMovie(MoviesModel moviesFav) {
 
-        newsDB.moviesDao().addFavouriteMovie(moviesFav);
+        moviesDB.moviesDao().addFavouriteMovie(moviesFav);
     }
 
 
-
-
     //call for getting catogery like action,romance etc....
-    public void getCategoriesList(String catogeryId,int page) {
-        Call<MoviesResponseBody> popularMovies = ApiClient.getInstance().getCategories(catogeryId,page);
+    public void getCategoriesList(String catogeryId, int page) {
+        Call<MoviesResponseBody> popularMovies = ApiClient.getInstance().getCategories(catogeryId, page);
         popularMovies.enqueue(new Callback<MoviesResponseBody>() {
             @Override
             public void onResponse(Call<MoviesResponseBody> call, Response<MoviesResponseBody> response) {
@@ -126,15 +120,13 @@ public class MoviesActivityViewModel extends AndroidViewModel {
                     if (!check) {
                         deleteCashedMoviesList();
                         cashMoviesList(response.body().getResults());
-                        check=true;
+                        check = true;
                         moviesList.setValue(response.body().getResults());
                     }
                     loadmore.setValue(response.body().getResults());
                     Log.v("Url", call.request().url().toString());
 
-                }
-                else
-                {
+                } else {
                     moviesCashedList.setValue(getCashedMoviesList());
                 }
 
@@ -167,14 +159,7 @@ public class MoviesActivityViewModel extends AndroidViewModel {
         });
 
 
-
     }
-
-
-
-
-
-
 
 
 }

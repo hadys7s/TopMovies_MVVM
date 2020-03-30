@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/Home"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/home"/>
+    <item
+        android:id="@+id/favourites"
+        android:icon="@drawable/ic_favorite_black_24dp"
+        android:title="@string/favourites"/>
+    <item
+        android:id="@+id/action"
+        android:icon="@drawable/action"
+        android:title="@string/action"/>
+    <item
+        android:id="@+id/horror"
+        android:icon="@drawable/horror"
+        android:title="@string/horror"/>
+    <item
+        android:id="@+id/comedy"
+        android:icon="@drawable/comedy"
+        android:title="@string/comedy"/>
+
+    <item
+        android:id="@+id/drama"
+        android:icon="@drawable/drama"
+        android:title="@string/drama"/>
+    <item
+        android:id="@+id/romance"
+        android:icon="@drawable/romance"
+        android:title="@string/romance"/>
+    <item
+        android:id="@+id/crime"
+        android:icon="@drawable/crime"
+        android:title="@string/crime"/>
+    <item
+        android:id="@+id/science_fiction"
+        android:icon="@drawable/science_fiction"
+        android:title="@string/science_fiction"/>
+
+</menu>

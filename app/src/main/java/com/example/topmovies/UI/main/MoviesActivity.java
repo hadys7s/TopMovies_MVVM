@@ -276,8 +276,7 @@ public class MoviesActivity extends AppCompatActivity {
             public void onChanged(List<MoviesModel> favouriteMovies) {
                 activityMainBinding.rvPopularmovies.setVisibility(View.VISIBLE);
                 activityMainBinding.emptyView.setVisibility(View.INVISIBLE);
-                mainAdapter.clear();
-                mainAdapter.addMoviesList(favouriteMovies);
+                mainAdapter.loadMore(favouriteMovies);
             }
         });
         // if no show no favourites
@@ -310,7 +309,7 @@ public class MoviesActivity extends AppCompatActivity {
             public void onChanged(List<MoviesModel> moviesModels) {
                 moviesModels.remove(moviesModels.size() - 1);
                 moviesModels.remove(moviesModels.size() - 2);
-                mainAdapter.loadMore(moviesModels);
+                mainAdapter.addMoviesList(moviesModels);
             }
         });
 
@@ -333,7 +332,7 @@ public class MoviesActivity extends AppCompatActivity {
         viewModel.error.observe(this, new Observer<Throwable>() {
             @Override
             public void onChanged(Throwable throwable) {
-                Toast.makeText(context, "No Internet Connection", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "No Internet Connection", Toast.LENGTH_SHORT).show();
             }
         });
     }
